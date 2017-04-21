@@ -11,3 +11,7 @@ Install the following pip3 packages:
   * arrow
   * emoji
   * requests
+
+## Usage
+Create a Token using the _Botfather_, then save it to `.token`.
+Run `spacebot.py` and then use `/subscribe` to start receiving notifications.
