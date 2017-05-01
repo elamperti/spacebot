@@ -20,7 +20,7 @@ subscriber_list = []
 
 # The logger
 log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-logging.basicConfig(level=logging.DEBUG, format=log_format)
+logging.basicConfig(level=logging.WARN, format=log_format)
 
 # Start a background scheduler
 scheduler = BackgroundScheduler()
@@ -175,9 +175,13 @@ def notifyLaunch(props):
     logging.info("Starting broadcast for %s" % props['name'])
     for chat_id in subscriber_list:
         logging.debug("Contacting %s" % chat_id)
-        bot.send_message(chat_id, text=message,
-                         parse_mode=telegram.ParseMode.MARKDOWN)
-        sleep(0.04)  # Max. 30 reqs/second
+        try:
+            bot.send_message(chat_id, text=message,
+                             parse_mode=telegram.ParseMode.MARKDOWN)
+            sleep(0.04)  # Max. 30 reqs/second
+        except Exception as e:
+            logging.error("Horrible error ahead")
+            logging.error(str(e))
 
 
 if __name__ == '__main__':
