@@ -12,6 +12,7 @@ from telegram.error import NetworkError, Unauthorized
 from emoji import emojize
 
 update_id = None
+the_bot_name = 'SqueedlyspoochBot'
 token = ''
 
 # About subscribers...
@@ -29,6 +30,7 @@ scheduler = BackgroundScheduler()
 def main():
     global bot
     global sf
+    global the_bot_name
     global token
     global update_id
 
@@ -101,14 +103,23 @@ def listenForUpdates(bot):
             continue
 
         if update.message:  # the bot can receive updates without messages
-            if update.message.text == '/subscribe':
+            if update.message.text == '/subscribe' or update.message.text == '/subscribe@' + the_bot_name:
                 if chat_id not in subscriber_list:
-                    logging.debug("Added subscriber %i" % chat_id)
+                    logging.debug("Adding subscriber %i" % chat_id)
+                    reply_message = 'Subscribed successfully!'
+
                     subscriber_list.append(chat_id)
                     with open(sf, 'a') as subscribers:
                         subscribers.write('\n' + str(chat_id))
-            # Reply to the message
-            # update.message.reply_text(update.message.text)
+                else:
+                    reply_message = 'You were already subscribed'
+
+                # Reply to the user
+                try: 
+                    update.message.reply_text('You are already subscribed')
+                except Exception as e:
+                    logging.error('Failed to reply on subscription')
+                    logging.error(e)
 
 
 def fetchLaunches():
